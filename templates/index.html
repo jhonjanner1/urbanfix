@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reporte Ciudadano</title>
+  <link rel="stylesheet" href="/static/index.css">
+
+</head>
+<body>
+
+  <nav>
+    <div class="logo">Reporte Ciudadano</div>
+    <div class="nav-links">
+      <a href="index.html">Inicio</a>
+      <a href="{{ url_for('login') }}">Inicia Sesion</a>
+      <a href="{{ url_for('register') }}">Registrarse</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>Bienvenido a UrbanFix</h1>
+    <p>Denuncia baches, fallas en el alumbrado y otros problemas de tu ciudad. ¡Haz la diferencia!</p>
+    <a href="/templates/register.html" class="btn">Empieza Ahora</a>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+  </section>
+
+  <div class="carousel">
+    <div class="carousel-track">
+      <img src="{{ url_for('static', filename='img/bache1.jpg') }}" alt="Reporte 1">
+      <img src="{{ url_for('static', filename='img/poste.jpg') }}" alt="Reporte 2">
+      <img src="{{ url_for('static', filename='img/señal.jpg') }}" alt="Reporte 3">
+    </div>
+  </div>
+
+  <section class="reports">
+    <div class="report-card" onclick="location.href='{{ url_for('register') }}'">
+      <h3>Bache en Calle 12</h3>
+      <p>Un gran bache está afectando el tráfico en esta zona.</p>
+   </div>
+    <div class="report-card" onclick="location.href='{{ url_for('register') }}'">
+     <h3>Fallo de alumbrado</h3>
+     <p>Sector oscuro y peligroso por luces dañadas.</p>
+    </div>
+   <div class="report-card" onclick="location.href='{{ url_for('register') }}'">
+     <h3>Señal caída</h3>
+      <p>Un aviso de tránsito bloquea parte de la vía.</p>
+    </div>
+  </section>
+
+
+  <footer>
+     Reportes por JAC
+  </footer>
+
+</body>
+</html>

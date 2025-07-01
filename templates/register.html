@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registro</title>
+    <link rel="stylesheet" href="/static/register.css">
+</head>
+<body>
+    <h1>Registro de Usuario</h1>
+    <form method="POST" action="/register">
+        <input type="text" name="nombre" placeholder="Nombre" required>
+        <input type="email" name="correo" placeholder="Correo" required>
+        <input type="number" name="telefono" placeholder="Teléfono">
+        <input type="password" name="contrasena" placeholder="Contraseña" required>
+        
+        <label for="tipo_usuario">Tipo de Usuario:</label>
+        <select name="tipo_usuario" id="tipo_usuario" required>
+            <option value="ciudadano">Ciudadano</option>
+            <option value="jac">JAC</option>
+            <option value="admin">Administrador</option>
+        </select>
+
+        <label for="id_junta">¿De qué Junta de Acción Comunal vienes? (solo si eres JAC):</label>
+        <select name="id_junta" id="id_junta">
+            <option value="">-- Selecciona una JAC --</option>
+            <option value="1">Junta Acción Comunal Centro</option>
+            <option value="2">Junta Acción Comunal Norte</option>
+            <option value="3">Junta Acción Comunal Sur</option>
+            <option value="4">Junta Acción Comunal Chapinero</option>
+            <option value="5">Junta Acción Comunal Suba</option>
+            <option value="6">Junta Acción Comunal Usaquén</option>
+            <option value="7">Junta Acción Comunal Kennedy</option>
+            <option value="8">Junta Acción Comunal Teusaquillo</option>
+            <option value="9">Junta Acción Comunal Fontibón</option>
+            <option value="10">Junta Acción Comunal Engativá</option>
+        </select>
+
+        <button type="submit">Registrarse</button>
+        <a href="/templates/login.html">Ya tienes cuenta ?</a>
+    </form>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reportes JAC</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #27ae60;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #2ecc71;
+      color: #fff;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 15px;
+      background-color: #27ae60;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .btn:hover {
+      background-color: #1e8449;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Reportes de la Junta de Acción Comunal</h1>
+  </header>
+
+  <div class="container">
+    <a href="index.html" class="btn">Volver al inicio</a>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Tipo de Reporte</th>
+          <th>Detalle</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Solicitud de mantenimiento</td>
+          <td>Parque comunitario sin iluminación</td>
+          <td>2025-06-30</td>
+          <td>En gestión</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Petición de evento</td>
+          <td>Solicitud de permiso para feria barrial</td>
+          <td>2025-06-25</td>
+          <td>Aprobado</td>
+        </tr>
+        <!-- Agrega más reportes aquí -->
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>
