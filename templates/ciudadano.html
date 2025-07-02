@@ -1,0 +1,383 @@
+<!-- templates/ciudadano.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel Ciudadano - UrbanFix</title>
+  <style>
+    /* Reset básico */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 0;
+      background: #f5f7fa;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background-color: #004c97; /* azul UrbanFix */
+      color: white;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header a {
+      color: white;
+      text-decoration: none;
+      font-weight: normal;
+      font-size: 0.9rem;
+      border: 1px solid white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+    header a:hover {
+      background-color: #063e70;
+    }
+    main {
+      flex-grow: 1;
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #004c97;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      color: #004c97;
+      margin-bottom: 1rem;
+    }
+    .report-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 2rem 0;
+    }
+    .report-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+      padding: 1rem 1.5rem;
+      cursor: pointer;
+      transition: box-shadow 0.3s ease;
+    }
+    .report-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .report-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+      color: #002d5b;
+    }
+    .report-desc {
+      font-size: 0.95rem;
+      margin-bottom: 0.6rem;
+      color: #555;
+      min-height: 40px;
+    }
+    .report-meta {
+      font-size: 0.85rem;
+      color: #777;
+      display: flex;
+      gap: 1rem;
+    }
+    .status-open {
+      color: #198754; /* verde */
+      font-weight: bold;
+    }
+    .status-closed {
+      color: #dc3545; /* rojo */
+      font-weight: bold;
+    }
+    /* Detalle reporte */
+    #detalle-reporte {
+      background: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      display: none;
+    }
+    #detalle-reporte h3 {
+      margin-top: 0;
+      color: #004c97;
+    }
+    #detalle-reporte p {
+      line-height: 1.4;
+    }
+    /* Comentarios */
+    #comentarios {
+      margin-top: 1.5rem;
+    }
+    #comentarios h4 {
+      margin-bottom: 0.5rem;
+    }
+    .comentario {
+      background: #e7f1ff;
+      border-radius: 6px;
+      padding: 0.6rem 1rem;
+      margin-bottom: 0.6rem;
+      font-size: 0.9rem;
+      color: #002d5b;
+    }
+    /* Formulario nuevo reporte */
+    #form-nuevo-reporte {
+      background: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 0 auto 3rem auto;
+    }
+    #form-nuevo-reporte h3 {
+      color: #004c97;
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+    #form-nuevo-reporte label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+      color: #002d5b;
+    }
+    #form-nuevo-reporte input[type="text"],
+    #form-nuevo-reporte textarea,
+    #form-nuevo-reporte select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #bbb;
+      border-radius: 4px;
+      font-size: 1rem;
+      resize: vertical;
+      font-family: inherit;
+    }
+    #form-nuevo-reporte textarea {
+      min-height: 80px;
+    }
+    #form-nuevo-reporte button {
+      background-color: #004c97;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    #form-nuevo-reporte button:hover {
+      background-color: #063e70;
+    }
+    /* Mensaje */
+    #mensaje {
+      max-width: 600px;
+      margin: 0 auto 2rem auto;
+      padding: 1rem;
+      border-radius: 6px;
+      background-color: #d1e7dd;
+      color: #0f5132;
+      font-weight: bold;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>UrbanFix - Panel Ciudadano | Hola, {{ session.nombre }}</div>
+    <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+  </header>
+
+  <main>
+    <h1>Bienvenido, {{ session.nombre }} (Ciudadano)</h1>
+
+    <h2>Reportes recientes</h2>
+    <ul class="report-list" id="report-list">
+      <!-- Los reportes se listan aquí con JS -->
+    </ul>
+
+    <section id="detalle-reporte">
+      <h3 id="detalle-titulo"></h3>
+      <p id="detalle-descripcion"></p>
+      <p><strong>Estado:</strong> <span id="detalle-estado"></span></p>
+      <p><strong>Ubicación:</strong> <span id="detalle-ubicacion"></span></p>
+
+      <div id="comentarios">
+        <h4>Comentarios</h4>
+        <div id="lista-comentarios"></div>
+
+        <form id="form-comentario">
+          <label for="comentario-texto">Agregar comentario:</label>
+          <textarea id="comentario-texto" required></textarea>
+          <button type="submit">Enviar comentario</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="form-nuevo-reporte">
+      <h3>Crear nuevo reporte</h3>
+      <form id="nuevo-reporte-form">
+        <label for="titulo">Título</label>
+        <input type="text" id="titulo" required />
+
+        <label for="descripcion">Descripción</label>
+        <textarea id="descripcion" required></textarea>
+
+        <label for="ubicacion">Ubicación</label>
+        <input type="text" id="ubicacion" required />
+
+        <label for="estado">Estado</label>
+        <select id="estado" required>
+          <option value="Abierto" selected>Abierto</option>
+          <option value="Cerrado">Cerrado</option>
+        </select>
+
+        <button type="submit">Enviar reporte</button>
+      </form>
+    </section>
+
+    <div id="mensaje"></div>
+  </main>
+
+  <script>
+    // Datos ejemplo para reportes (esto se debería traer del backend)
+    let reportes = [
+      {
+        id: 1,
+        titulo: "Bache en la calle 12",
+        descripcion: "Un gran bache que está causando accidentes.",
+        estado: "Abierto",
+        ubicacion: "Calle 12 con 34",
+        comentarios: [
+          { texto: "Por favor arreglen pronto!", fecha: "2025-07-01" },
+          { texto: "Hace meses que está así :(", fecha: "2025-07-02" }
+        ]
+      },
+      {
+        id: 2,
+        titulo: "Alumbrado público apagado",
+        descripcion: "Varias lámparas apagadas en el parque central.",
+        estado: "Cerrado",
+        ubicacion: "Parque Central",
+        comentarios: []
+      }
+    ];
+
+    const reportListEl = document.getElementById('report-list');
+    const detalleSection = document.getElementById('detalle-reporte');
+    const detalleTitulo = document.getElementById('detalle-titulo');
+    const detalleDescripcion = document.getElementById('detalle-descripcion');
+    const detalleEstado = document.getElementById('detalle-estado');
+    const detalleUbicacion = document.getElementById('detalle-ubicacion');
+    const listaComentarios = document.getElementById('lista-comentarios');
+    const formComentario = document.getElementById('form-comentario');
+    const comentarioTexto = document.getElementById('comentario-texto');
+    const mensajeEl = document.getElementById('mensaje');
+    const nuevoReporteForm = document.getElementById('nuevo-reporte-form');
+
+    let reporteSeleccionado = null;
+
+    function pintarReportes() {
+      reportListEl.innerHTML = '';
+      reportes.forEach(r => {
+        const li = document.createElement('li');
+        li.className = 'report-card';
+        li.innerHTML = `
+          <div class="report-title">${r.titulo}</div>
+          <div class="report-desc">${r.descripcion.substring(0, 80)}${r.descripcion.length > 80 ? '...' : ''}</div>
+          <div class="report-meta">
+            <span class="${r.estado === 'Abierto' ? 'status-open' : 'status-closed'}">${r.estado}</span>
+            <span>${r.ubicacion}</span>
+          </div>
+        `;
+        li.onclick = () => mostrarDetalle(r.id);
+        reportListEl.appendChild(li);
+      });
+    }
+
+    function mostrarDetalle(id) {
+      reporteSeleccionado = reportes.find(r => r.id === id);
+      if (!reporteSeleccionado) return;
+      detalleTitulo.textContent = reporteSeleccionado.titulo;
+      detalleDescripcion.textContent = reporteSeleccionado.descripcion;
+      detalleEstado.textContent = reporteSeleccionado.estado;
+      detalleUbicacion.textContent = reporteSeleccionado.ubicacion;
+
+      pintarComentarios();
+      detalleSection.style.display = 'block';
+      detalleSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function pintarComentarios() {
+      listaComentarios.innerHTML = '';
+      reporteSeleccionado.comentarios.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'comentario';
+        div.textContent = `${c.texto} (${c.fecha})`;
+        listaComentarios.appendChild(div);
+      });
+    }
+
+    formComentario.addEventListener('submit', e => {
+      e.preventDefault();
+      if (!reporteSeleccionado) return alert('Selecciona un reporte primero');
+      const texto = comentarioTexto.value.trim();
+      if (!texto) return;
+      const fecha = new Date().toISOString().slice(0, 10);
+      reporteSeleccionado.comentarios.push({ texto, fecha });
+      comentarioTexto.value = '';
+      pintarComentarios();
+      mostrarMensaje('Comentario agregado');
+    });
+
+    nuevoReporteForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const titulo = document.getElementById('titulo').value.trim();
+      const descripcion = document.getElementById('descripcion').value.trim();
+      const ubicacion = document.getElementById('ubicacion').value.trim();
+      const estado = document.getElementById('estado').value;
+
+      if (!titulo || !descripcion || !ubicacion) {
+        alert('Por favor completa todos los campos');
+        return;
+      }
+
+      const nuevoReporte = {
+        id: reportes.length + 1,
+        titulo,
+        descripcion,
+        estado,
+        ubicacion,
+        comentarios: []
+      };
+
+      reportes.unshift(nuevoReporte); // agrega al inicio
+      pintarReportes();
+      nuevoReporteForm.reset();
+      mostrarMensaje('Reporte enviado exitosamente');
+    });
+
+    function mostrarMensaje(texto) {
+      mensajeEl.textContent = texto;
+      mensajeEl.style.display = 'block';
+      setTimeout(() => {
+        mensajeEl.style.display = 'none';
+      }, 3000);
+    }
+
+    // Al cargar la página:
+    pintarReportes();
+  </script>
+
+</body>
+</html>

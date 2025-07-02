@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-07-2025 a las 09:55:51
+-- Tiempo de generación: 02-07-2025 a las 08:44:45
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -24,16 +24,39 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `archivos_reporte`
+-- Estructura de tabla para la tabla `archivos_adjuntos`
 --
 
-CREATE TABLE `archivos_reporte` (
-  `id` int(11) NOT NULL,
+CREATE TABLE `archivos_adjuntos` (
+  `id_archivo` int(11) NOT NULL,
   `id_reporte` int(11) NOT NULL,
-  `nombre_archivo` varchar(255) DEFAULT NULL,
-  `ruta_archivo` varchar(500) DEFAULT NULL,
-  `tipo_archivo` varchar(50) DEFAULT NULL,
-  `fecha_subida` datetime DEFAULT current_timestamp()
+  `url_archivo` varchar(255) NOT NULL,
+  `tipo_archivo` varchar(20) DEFAULT NULL,
+  `fecha_subida` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `barrios`
+--
+
+CREATE TABLE `barrios` (
+  `id_barrio` int(11) NOT NULL,
+  `id_localidad` int(11) NOT NULL,
+  `nombre_barrio` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `categorias_danio`
+--
+
+CREATE TABLE `categorias_danio` (
+  `id_categoria` int(11) NOT NULL,
+  `nombre_categoria` varchar(100) NOT NULL,
+  `descripcion` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -43,35 +66,34 @@ CREATE TABLE `archivos_reporte` (
 --
 
 CREATE TABLE `comentarios` (
-  `id` int(11) NOT NULL,
+  `id_comentario` int(11) NOT NULL,
   `id_reporte` int(11) NOT NULL,
   `id_usuario` int(11) NOT NULL,
-  `comentario` text NOT NULL,
-  `fecha_comentario` datetime DEFAULT current_timestamp()
+  `contenido` text NOT NULL,
+  `fecha_comentario` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `historial_estado_reporte`
+-- Estructura de tabla para la tabla `estadisticas_reporte`
 --
 
-CREATE TABLE `historial_estado_reporte` (
-  `id` int(11) NOT NULL,
+CREATE TABLE `estadisticas_reporte` (
+  `id_estadistica` int(11) NOT NULL,
   `id_reporte` int(11) NOT NULL,
-  `estado` varchar(50) NOT NULL,
-  `fecha_cambio` datetime DEFAULT current_timestamp(),
-  `observacion` text DEFAULT NULL
+  `veces_visto` int(11) DEFAULT 0,
+  `veces_comentado` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `juntas_accion_comunal`
+-- Estructura de tabla para la tabla `junta_accion_comunal`
 --
 
-CREATE TABLE `juntas_accion_comunal` (
-  `id` int(11) NOT NULL,
+CREATE TABLE `junta_accion_comunal` (
+  `id_junta` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `localidad` varchar(100) NOT NULL,
   `direccion` varchar(200) DEFAULT NULL,
@@ -80,62 +102,30 @@ CREATE TABLE `juntas_accion_comunal` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `juntas_accion_comunal`
+-- Volcado de datos para la tabla `junta_accion_comunal`
 --
 
-INSERT INTO `juntas_accion_comunal` (`id`, `nombre`, `localidad`, `direccion`, `telefono`, `correo`) VALUES
-(1, 'Junta Acción Comunal Centro', 'Centro', 'Calle 10 #5-20', '3101234567', 'centro@jacbogota.gov.co'),
-(2, 'Junta Acción Comunal Norte', 'Norte', 'Carrera 15 #30-40', '3102345678', 'norte@jacbogota.gov.co'),
-(3, 'Junta Acción Comunal Sur', 'Sur', 'Avenida 1 #50-60', '3103456789', 'sur@jacbogota.gov.co'),
-(4, 'Junta Acción Comunal Chapinero', 'Chapinero', 'Calle 59 #12-34', '3104567890', 'chapinero@jacbogota.gov.co'),
-(5, 'Junta Acción Comunal Suba', 'Suba', 'Carrera 90 #140-22', '3105678901', 'suba@jacbogota.gov.co'),
-(6, 'Junta Acción Comunal Usaquén', 'Usaquén', 'Avenida 15 #120-15', '3106789012', 'usaquen@jacbogota.gov.co'),
-(7, 'Junta Acción Comunal Kennedy', 'Kennedy', 'Calle 44 #80-10', '3107890123', 'kennedy@jacbogota.gov.co'),
-(8, 'Junta Acción Comunal Teusaquillo', 'Teusaquillo', 'Carrera 24 #45-20', '3108901234', 'teusaquillo@jacbogota.gov.co'),
-(9, 'Junta Acción Comunal Fontibón', 'Fontibón', 'Avenida 68 #100-33', '3109012345', 'fontibon@jacbogota.gov.co'),
-(10, 'Junta Acción Comunal Engativá', 'Engativá', 'Calle 80 #70-50', '3110123456', 'engativa@jacbogota.gov.co');
+INSERT INTO `junta_accion_comunal` (`id_junta`, `nombre`, `localidad`, `direccion`, `telefono`, `correo`) VALUES
+(1, 'Junta Los Pinos', 'Localidad 1', 'Calle 45 # 23-10', '3101234567', 'junta.lospinos@example.com'),
+(2, 'Junta La Esperanza', 'Localidad 2', 'Carrera 15 # 40-20', '3112345678', 'laesperanza@example.com'),
+(3, 'Junta El Porvenir', 'Localidad 3', 'Calle 12 # 7-50', '3123456789', 'elporvenir@example.com'),
+(4, 'Junta San Miguel', 'Localidad 1', 'Carrera 9 # 30-15', '3134567890', 'sanmiguel@example.com'),
+(5, 'Junta Villa Nueva', 'Localidad 4', 'Calle 22 # 18-40', '3145678901', 'villanueva@example.com'),
+(6, 'Junta La Paz', 'Localidad 3', 'Carrera 27 # 50-33', '3156789012', 'lapaz@example.com'),
+(7, 'Junta Nueva Esperanza', 'Localidad 2', 'Calle 3 # 5-60', '3167890123', 'nuevaesperanza@example.com'),
+(8, 'Junta El Recuerdo', 'Localidad 4', 'Carrera 11 # 44-22', '3178901234', 'elrecuerdo@example.com'),
+(9, 'Junta San Rafael', 'Localidad 1', 'Calle 18 # 29-10', '3189012345', 'sanrafael@example.com'),
+(10, 'Junta Buenavista', 'Localidad 3', 'Carrera 7 # 15-70', '3190123456', 'buenavista@example.com');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `likes_reporte`
+-- Estructura de tabla para la tabla `localidades`
 --
 
-CREATE TABLE `likes_reporte` (
-  `id` int(11) NOT NULL,
-  `id_reporte` int(11) NOT NULL,
-  `id_usuario` int(11) NOT NULL,
-  `fecha_like` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `mediciones_bache`
---
-
-CREATE TABLE `mediciones_bache` (
-  `id` int(11) NOT NULL,
-  `id_reporte` int(11) NOT NULL,
-  `tipo_medicion` varchar(100) DEFAULT NULL,
-  `valor` decimal(10,2) DEFAULT NULL,
-  `unidad_medida` varchar(50) DEFAULT NULL,
-  `fecha_medicion` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `mensajes`
---
-
-CREATE TABLE `mensajes` (
-  `id` int(11) NOT NULL,
-  `id_emisor` int(11) NOT NULL,
-  `id_receptor` int(11) NOT NULL,
-  `mensaje` text NOT NULL,
-  `fecha_envio` datetime DEFAULT current_timestamp(),
-  `leido` tinyint(1) DEFAULT 0
+CREATE TABLE `localidades` (
+  `id_localidad` int(11) NOT NULL,
+  `nombre_localidad` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -145,11 +135,22 @@ CREATE TABLE `mensajes` (
 --
 
 CREATE TABLE `notificaciones` (
-  `id` int(11) NOT NULL,
+  `id_notificacion` int(11) NOT NULL,
   `id_usuario` int(11) NOT NULL,
   `mensaje` text NOT NULL,
-  `fecha_envio` datetime DEFAULT current_timestamp(),
-  `leido` tinyint(1) DEFAULT 0
+  `leido` tinyint(1) DEFAULT 0,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `permisos`
+--
+
+CREATE TABLE `permisos` (
+  `id_permiso` int(11) NOT NULL,
+  `nombre_permiso` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -159,25 +160,42 @@ CREATE TABLE `notificaciones` (
 --
 
 CREATE TABLE `reportes` (
-  `id` int(11) NOT NULL,
+  `id_reporte` int(11) NOT NULL,
   `id_usuario` int(11) NOT NULL,
-  `id_tipo_bache` int(11) NOT NULL,
+  `id_categoria` int(11) NOT NULL,
+  `titulo` varchar(150) NOT NULL,
   `descripcion` text DEFAULT NULL,
-  `fecha_reporte` datetime DEFAULT current_timestamp(),
-  `ubicacion` varchar(255) NOT NULL,
-  `estado` varchar(50) DEFAULT 'pendiente'
+  `imagen_url` varchar(255) DEFAULT NULL,
+  `latitud` decimal(10,7) NOT NULL,
+  `longitud` decimal(10,7) NOT NULL,
+  `estado` enum('pendiente','en_proceso','resuelto') DEFAULT 'pendiente',
+  `fecha_reporte` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tipos_bache`
+-- Estructura de tabla para la tabla `rol_usuario`
 --
 
-CREATE TABLE `tipos_bache` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(100) NOT NULL,
-  `descripcion` text DEFAULT NULL
+CREATE TABLE `rol_usuario` (
+  `id_usuario` int(11) NOT NULL,
+  `id_rol` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `seguimiento`
+--
+
+CREATE TABLE `seguimiento` (
+  `id_seguimiento` int(11) NOT NULL,
+  `id_reporte` int(11) NOT NULL,
+  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp(),
+  `estado_anterior` enum('pendiente','en_proceso','resuelto') DEFAULT NULL,
+  `estado_nuevo` enum('pendiente','en_proceso','resuelto') DEFAULT NULL,
+  `observaciones` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -187,238 +205,247 @@ CREATE TABLE `tipos_bache` (
 --
 
 CREATE TABLE `usuarios` (
-  `id` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `correo` varchar(100) NOT NULL,
+  `contrasena` varchar(255) NOT NULL,
   `telefono` varchar(20) DEFAULT NULL,
-  `tipo_usuario` enum('jac','ciudadano','admin') NOT NULL DEFAULT 'ciudadano',
-  `id_junta_accion_comunal` int(11) DEFAULT NULL,
-  `contrasena` varchar(255) NOT NULL
+  `tipo_usuario` enum('ciudadano','jac','admin') NOT NULL DEFAULT 'ciudadano',
+  `id_junta` int(11) DEFAULT NULL,
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre`, `correo`, `telefono`, `tipo_usuario`, `id_junta_accion_comunal`, `contrasena`) VALUES
-(17, 'skibidi', 'skibidi@gmail.com', '12345678', 'ciudadano', NULL, 'hola1234'),
-(18, 'holaaaa', 'hola@gmail.com', '1231231132', 'ciudadano', NULL, 'hola12345678');
+INSERT INTO `usuarios` (`id_usuario`, `nombre`, `correo`, `contrasena`, `telefono`, `tipo_usuario`, `id_junta`, `fecha_registro`) VALUES
+(1, 'brazzers', 'brazzers@gmail.com', '12312321', '3112332132', 'ciudadano', NULL, '2025-07-08 05:00:00'),
+(2, 'braulio', 'baulio@gmail.com', '12312321dsadasds', '133213213', 'jac', 8, '2025-07-08 05:00:00');
 
 --
 -- Índices para tablas volcadas
 --
 
 --
--- Indices de la tabla `archivos_reporte`
+-- Indices de la tabla `archivos_adjuntos`
 --
-ALTER TABLE `archivos_reporte`
-  ADD PRIMARY KEY (`id`),
+ALTER TABLE `archivos_adjuntos`
+  ADD PRIMARY KEY (`id_archivo`),
   ADD KEY `id_reporte` (`id_reporte`);
+
+--
+-- Indices de la tabla `barrios`
+--
+ALTER TABLE `barrios`
+  ADD PRIMARY KEY (`id_barrio`),
+  ADD KEY `id_localidad` (`id_localidad`);
+
+--
+-- Indices de la tabla `categorias_danio`
+--
+ALTER TABLE `categorias_danio`
+  ADD PRIMARY KEY (`id_categoria`);
 
 --
 -- Indices de la tabla `comentarios`
 --
 ALTER TABLE `comentarios`
-  ADD PRIMARY KEY (`id`),
+  ADD PRIMARY KEY (`id_comentario`),
   ADD KEY `id_reporte` (`id_reporte`),
   ADD KEY `id_usuario` (`id_usuario`);
 
 --
--- Indices de la tabla `historial_estado_reporte`
+-- Indices de la tabla `estadisticas_reporte`
 --
-ALTER TABLE `historial_estado_reporte`
-  ADD PRIMARY KEY (`id`),
+ALTER TABLE `estadisticas_reporte`
+  ADD PRIMARY KEY (`id_estadistica`),
   ADD KEY `id_reporte` (`id_reporte`);
 
 --
--- Indices de la tabla `juntas_accion_comunal`
+-- Indices de la tabla `junta_accion_comunal`
 --
-ALTER TABLE `juntas_accion_comunal`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `junta_accion_comunal`
+  ADD PRIMARY KEY (`id_junta`);
 
 --
--- Indices de la tabla `likes_reporte`
+-- Indices de la tabla `localidades`
 --
-ALTER TABLE `likes_reporte`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_like` (`id_reporte`,`id_usuario`),
-  ADD KEY `id_usuario` (`id_usuario`);
-
---
--- Indices de la tabla `mediciones_bache`
---
-ALTER TABLE `mediciones_bache`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_reporte` (`id_reporte`);
-
---
--- Indices de la tabla `mensajes`
---
-ALTER TABLE `mensajes`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_emisor` (`id_emisor`),
-  ADD KEY `id_receptor` (`id_receptor`);
+ALTER TABLE `localidades`
+  ADD PRIMARY KEY (`id_localidad`);
 
 --
 -- Indices de la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
-  ADD PRIMARY KEY (`id`),
+  ADD PRIMARY KEY (`id_notificacion`),
   ADD KEY `id_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `permisos`
+--
+ALTER TABLE `permisos`
+  ADD PRIMARY KEY (`id_permiso`);
 
 --
 -- Indices de la tabla `reportes`
 --
 ALTER TABLE `reportes`
-  ADD PRIMARY KEY (`id`),
+  ADD PRIMARY KEY (`id_reporte`),
   ADD KEY `id_usuario` (`id_usuario`),
-  ADD KEY `id_tipo_bache` (`id_tipo_bache`);
+  ADD KEY `id_categoria` (`id_categoria`);
 
 --
--- Indices de la tabla `tipos_bache`
+-- Indices de la tabla `rol_usuario`
 --
-ALTER TABLE `tipos_bache`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `rol_usuario`
+  ADD PRIMARY KEY (`id_usuario`,`id_rol`),
+  ADD KEY `rol_usuario_ibfk_2` (`id_rol`);
+
+--
+-- Indices de la tabla `seguimiento`
+--
+ALTER TABLE `seguimiento`
+  ADD PRIMARY KEY (`id_seguimiento`),
+  ADD KEY `id_reporte` (`id_reporte`);
 
 --
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`),
+  ADD PRIMARY KEY (`id_usuario`),
   ADD UNIQUE KEY `correo` (`correo`),
-  ADD KEY `id_junta_accion_comunal` (`id_junta_accion_comunal`);
+  ADD KEY `id_junta` (`id_junta`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT de la tabla `archivos_reporte`
+-- AUTO_INCREMENT de la tabla `archivos_adjuntos`
 --
-ALTER TABLE `archivos_reporte`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `archivos_adjuntos`
+  MODIFY `id_archivo` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `barrios`
+--
+ALTER TABLE `barrios`
+  MODIFY `id_barrio` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `categorias_danio`
+--
+ALTER TABLE `categorias_danio`
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `comentarios`
 --
 ALTER TABLE `comentarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_comentario` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `historial_estado_reporte`
+-- AUTO_INCREMENT de la tabla `estadisticas_reporte`
 --
-ALTER TABLE `historial_estado_reporte`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `estadisticas_reporte`
+  MODIFY `id_estadistica` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `juntas_accion_comunal`
+-- AUTO_INCREMENT de la tabla `junta_accion_comunal`
 --
-ALTER TABLE `juntas_accion_comunal`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+ALTER TABLE `junta_accion_comunal`
+  MODIFY `id_junta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT de la tabla `likes_reporte`
+-- AUTO_INCREMENT de la tabla `localidades`
 --
-ALTER TABLE `likes_reporte`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `mediciones_bache`
---
-ALTER TABLE `mediciones_bache`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `mensajes`
---
-ALTER TABLE `mensajes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `localidades`
+  MODIFY `id_localidad` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `permisos`
+--
+ALTER TABLE `permisos`
+  MODIFY `id_permiso` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `reportes`
 --
 ALTER TABLE `reportes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_reporte` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `tipos_bache`
+-- AUTO_INCREMENT de la tabla `seguimiento`
 --
-ALTER TABLE `tipos_bache`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `seguimiento`
+  MODIFY `id_seguimiento` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Restricciones para tablas volcadas
 --
 
 --
--- Filtros para la tabla `archivos_reporte`
+-- Filtros para la tabla `archivos_adjuntos`
 --
-ALTER TABLE `archivos_reporte`
-  ADD CONSTRAINT `archivos_reporte_ibfk_1` FOREIGN KEY (`id_reporte`) REFERENCES `reportes` (`id`);
+ALTER TABLE `archivos_adjuntos`
+  ADD CONSTRAINT `archivos_adjuntos_ibfk_1` FOREIGN KEY (`id_reporte`) REFERENCES `reportes` (`id_reporte`);
+
+--
+-- Filtros para la tabla `barrios`
+--
+ALTER TABLE `barrios`
+  ADD CONSTRAINT `barrios_ibfk_1` FOREIGN KEY (`id_localidad`) REFERENCES `localidades` (`id_localidad`);
 
 --
 -- Filtros para la tabla `comentarios`
 --
 ALTER TABLE `comentarios`
-  ADD CONSTRAINT `comentarios_ibfk_1` FOREIGN KEY (`id_reporte`) REFERENCES `reportes` (`id`),
-  ADD CONSTRAINT `comentarios_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`);
+  ADD CONSTRAINT `comentarios_ibfk_1` FOREIGN KEY (`id_reporte`) REFERENCES `reportes` (`id_reporte`),
+  ADD CONSTRAINT `comentarios_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`);
 
 --
--- Filtros para la tabla `historial_estado_reporte`
+-- Filtros para la tabla `estadisticas_reporte`
 --
-ALTER TABLE `historial_estado_reporte`
-  ADD CONSTRAINT `historial_estado_reporte_ibfk_1` FOREIGN KEY (`id_reporte`) REFERENCES `reportes` (`id`);
-
---
--- Filtros para la tabla `likes_reporte`
---
-ALTER TABLE `likes_reporte`
-  ADD CONSTRAINT `likes_reporte_ibfk_1` FOREIGN KEY (`id_reporte`) REFERENCES `reportes` (`id`),
-  ADD CONSTRAINT `likes_reporte_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`);
-
---
--- Filtros para la tabla `mediciones_bache`
---
-ALTER TABLE `mediciones_bache`
-  ADD CONSTRAINT `mediciones_bache_ibfk_1` FOREIGN KEY (`id_reporte`) REFERENCES `reportes` (`id`);
-
---
--- Filtros para la tabla `mensajes`
---
-ALTER TABLE `mensajes`
-  ADD CONSTRAINT `mensajes_ibfk_1` FOREIGN KEY (`id_emisor`) REFERENCES `usuarios` (`id`),
-  ADD CONSTRAINT `mensajes_ibfk_2` FOREIGN KEY (`id_receptor`) REFERENCES `usuarios` (`id`);
+ALTER TABLE `estadisticas_reporte`
+  ADD CONSTRAINT `estadisticas_reporte_ibfk_1` FOREIGN KEY (`id_reporte`) REFERENCES `reportes` (`id_reporte`);
 
 --
 -- Filtros para la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
-  ADD CONSTRAINT `notificaciones_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`);
+  ADD CONSTRAINT `notificaciones_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`);
 
 --
 -- Filtros para la tabla `reportes`
 --
 ALTER TABLE `reportes`
-  ADD CONSTRAINT `reportes_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`),
-  ADD CONSTRAINT `reportes_ibfk_2` FOREIGN KEY (`id_tipo_bache`) REFERENCES `tipos_bache` (`id`);
+  ADD CONSTRAINT `reportes_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`),
+  ADD CONSTRAINT `reportes_ibfk_2` FOREIGN KEY (`id_categoria`) REFERENCES `categorias_danio` (`id_categoria`);
+
+--
+-- Filtros para la tabla `rol_usuario`
+--
+ALTER TABLE `rol_usuario`
+  ADD CONSTRAINT `rol_usuario_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`);
 
 --
 -- Filtros para la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`id_junta_accion_comunal`) REFERENCES `juntas_accion_comunal` (`id`);
+  ADD CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`id_junta`) REFERENCES `junta_accion_comunal` (`id_junta`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
