@@ -1,12 +1,16 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, jsonify, render_template, request, redirect, url_for, session
+from pywebpush import webpush, WebPushException
+import json
+
 from flaskext.mysql import MySQL 
 import pymysql
+import smtplib
+
 
 app = Flask(__name__, template_folder='templates')
 
 # Clave secreta para que Flask pueda usar sesiones
 app.secret_key = 'urbanfix'
-
 mysql = MySQL()
 
 # Configuración básica
@@ -16,9 +20,120 @@ app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.config['MYSQL_DATABASE_DB'] = 'urbanfix'
 mysql.init_app(app)
 
+# Configuración VAPID (REEMPLAZA CON TUS CLAVES)
+VAPID_PRIVATE_KEY = "xHfHfiRs_ys6mgkcZKprHkQ7WKR3XA6tnn5aZjSzB9E"
+VAPID_PUBLIC_KEY = "BJjKJhmzxW3aq7gRM8uarPZhT6IAMMPvnW9PBHY5ljpz8RFFoqAOU5BIqbsAntljdiyGkDL6EDq4yPaFj7q_Iu0"
+VAPID_CLAIMS = {
+    "sub": "mailto:giovannyurigod655@gmail.com"
+}
+
+
+# Crear tabla para suscripciones (ejecutar una sola vez)
+def create_subscriptions_table():
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS subscriptions (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            endpoint TEXT NOT NULL,
+            p256dh TEXT NOT NULL,
+            auth TEXT NOT NULL,
+            user_id INT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """)
+        conn.commit()
+    except Exception as e:
+        print(f"Error creando tabla: {e}")
+    finally:
+        cursor.close()
+        conn.close()
+
+
+# Ruta para suscribir usuarios
+@app.route('/subscribe', methods=['POST'])
+def subscribe():
+    if not request.json or 'endpoint' not in request.json:
+        return jsonify({'error': 'Datos incompletos'}), 400
+
+    subscription = request.json
+    user_id = request.args.get('user_id', type=int)  # Opcional
+
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO subscriptions (endpoint, p256dh, auth, user_id)
+            VALUES (%s, %s, %s, %s)
+            """,
+            (
+                subscription['endpoint'],
+                subscription['keys']['p256dh'],
+                subscription['keys']['auth'],
+                user_id
+            )
+        )
+        conn.commit()
+        return jsonify({'success': True}), 201
+    except Exception as e:
+        print(f"Error en /subscribe: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+    
+# Ruta para enviar notificaciones
+@app.route('/send-notification', methods=['POST'])
+def send_notification():
+    if not request.json or 'title' not in request.json:
+        return jsonify({'error': 'Datos incompletos'}), 400
+
+    notification = request.json
+
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT endpoint, p256dh, auth FROM subscriptions")
+        subscriptions = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        for sub in subscriptions:
+            try:
+                webpush(
+                    subscription_info={
+                        "endpoint": sub['endpoint'],
+                        "keys": {
+                            "p256dh": sub['p256dh'],
+                            "auth": sub['auth']
+                        }
+                    },
+                    data=json.dumps({
+                        "title": notification['title'],
+                        "body": notification.get('body', ''),
+                        "icon": notification.get('icon', 'http://127.0.0.1:5000/static/icon.png')
+                    }),
+                    vapid_private_key=VAPID_PRIVATE_KEY,
+                    vapid_claims=VAPID_CLAIMS
+                )
+            except WebPushException as e:
+                print(f"Error enviando notificación: {e}")
+
+        return jsonify({'success': True, 'sent_to': len(subscriptions)}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+
+if __name__ == '__main__':
+    create_subscriptions_table()
+    app.run(debug=True)
+
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('index.html', public_key=VAPID_PUBLIC_KEY)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -115,3 +230,54 @@ def logout():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+class Mensaje:
+
+  CARRIERS = {
+      "gmail": "@gmail.com"
+  }
+  #email de prueba o proyecto w
+  EMAIL = "giovannyurigod655@gmail.com"
+  #contraseña de app generada desde gmail
+  PASSWORD = "ekptlvyayayvhmot"
+
+
+  def __init__(self, email):
+        self.email = email
+
+  def enviar_correo(self, destinatario, texto): #definicion metodo para envio de correo
+        recipient = destinatario
+        if not recipient:
+            return "Carrier no válido."
+
+        message = f"Subject: Notificacion\n\n{texto}"
+
+        try:
+            enviar = smtplib.SMTP("smtp.gmail.com", 587)
+            enviar.starttls()
+            print(self.EMAIL, self.PASSWORD)
+            enviar.login(self.EMAIL, self.PASSWORD)
+            enviar.sendmail(self.EMAIL,recipient, message)
+            enviar.quit()
+            return f"Correo enviado a {recipient}"
+        except Exception as e:
+            return f"Error al enviar el correo: {e}"
+
+  def recibir(self):
+        return f"Este es el método recibir mensaje"
+
+  def marcar_leido(self):
+        return f"Este es el método marcar mensaje"
+
+# Crear una instancia
+mi_mensaje = Mensaje("tucorreo@gmail.com")
+
+# uso de metodos
+print(mi_mensaje.enviar_correo("giovannyurigod655@gmail.com", "Este mensaje es una prueba de funciono y ahora urbanfix es el cambio del mundo :P, reparar calles"))
+print(mi_mensaje.recibir())
+print(mi_mensaje.marcar_leido())
+
+
+    

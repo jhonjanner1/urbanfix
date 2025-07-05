@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-07-2025 a las 08:44:45
+-- Tiempo de generación: 05-07-2025 a las 08:58:05
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -201,6 +201,31 @@ CREATE TABLE `seguimiento` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `subscriptions`
+--
+
+CREATE TABLE `subscriptions` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `endpoint` text NOT NULL,
+  `p256dh` text NOT NULL,
+  `auth` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `subscriptions`
+--
+
+INSERT INTO `subscriptions` (`id`, `user_id`, `endpoint`, `p256dh`, `auth`, `created_at`) VALUES
+(1, NULL, 'https://fcm.googleapis.com/fcm/send/fFQt0fpiVtk:APA91bGEcCCXMpCecSCyEh1tuD37jb3jmWZ35_dWmMmUJd_Lnbq7lyb5ugl78YcrbRqTTjVETeCICkIabsVvLDSG12ntDtneQcOJxQqNUGEuUdbk7aCU_igeAjVbY6cU9Dqek8WachSt', 'BCFu1GLVryVVUKnkLuLwY32tgNb4t9Q29iiFJNo8wJk6n0MVIURLv8Xoutc4iYL_Oah0_CEjHebFAWH0XRtF9gM', '8-TTJdATXqPIqSY99tdzkw', '2025-07-05 06:34:52'),
+(2, NULL, 'https://fcm.googleapis.com/fcm/send/fFQt0fpiVtk:APA91bGEcCCXMpCecSCyEh1tuD37jb3jmWZ35_dWmMmUJd_Lnbq7lyb5ugl78YcrbRqTTjVETeCICkIabsVvLDSG12ntDtneQcOJxQqNUGEuUdbk7aCU_igeAjVbY6cU9Dqek8WachSt', 'BCFu1GLVryVVUKnkLuLwY32tgNb4t9Q29iiFJNo8wJk6n0MVIURLv8Xoutc4iYL_Oah0_CEjHebFAWH0XRtF9gM', '8-TTJdATXqPIqSY99tdzkw', '2025-07-05 06:42:08'),
+(3, NULL, 'https://fcm.googleapis.com/fcm/send/dAd6AZB24x4:APA91bG0Fyyhg2y0RBOZt0NiKqPmPgkZSfEqkUM0ucJf-i_8AQduReQ1RKKvTczvQPAcu2ooCth75S4FqtD1_obliFYfSFgZX34bvFkX9uNzHDMGkZb-XPc1TsnOiRanBqqDDrGyjC3-', 'BOrANKHmx5UOyA8mJvfkS-g4Z9bB3gsAACJA_fxeRNPQw5GtOYMgO-LklHMT2ZdIfTgORk3O60U86dKiHKzFd6Q', '4G00WhgPs5BrWpqiySZc_g', '2025-07-05 06:55:53'),
+(4, NULL, 'https://fcm.googleapis.com/fcm/send/dAd6AZB24x4:APA91bG0Fyyhg2y0RBOZt0NiKqPmPgkZSfEqkUM0ucJf-i_8AQduReQ1RKKvTczvQPAcu2ooCth75S4FqtD1_obliFYfSFgZX34bvFkX9uNzHDMGkZb-XPc1TsnOiRanBqqDDrGyjC3-', 'BOrANKHmx5UOyA8mJvfkS-g4Z9bB3gsAACJA_fxeRNPQw5GtOYMgO-LklHMT2ZdIfTgORk3O60U86dKiHKzFd6Q', '4G00WhgPs5BrWpqiySZc_g', '2025-07-05 06:55:56');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `usuarios`
 --
 
@@ -212,16 +237,21 @@ CREATE TABLE `usuarios` (
   `telefono` varchar(20) DEFAULT NULL,
   `tipo_usuario` enum('ciudadano','jac','admin') NOT NULL DEFAULT 'ciudadano',
   `id_junta` int(11) DEFAULT NULL,
-  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp(),
+  `endpoint` text DEFAULT NULL,
+  `p256dh` text DEFAULT NULL,
+  `auth` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id_usuario`, `nombre`, `correo`, `contrasena`, `telefono`, `tipo_usuario`, `id_junta`, `fecha_registro`) VALUES
-(1, 'brazzers', 'brazzers@gmail.com', '12312321', '3112332132', 'ciudadano', NULL, '2025-07-08 05:00:00'),
-(2, 'braulio', 'baulio@gmail.com', '12312321dsadasds', '133213213', 'jac', 8, '2025-07-08 05:00:00');
+INSERT INTO `usuarios` (`id_usuario`, `nombre`, `correo`, `contrasena`, `telefono`, `tipo_usuario`, `id_junta`, `fecha_registro`, `endpoint`, `p256dh`, `auth`) VALUES
+(1, 'brazzers', 'brazzers@gmail.com', '12312321', '3112332132', 'ciudadano', NULL, '2025-07-08 05:00:00', NULL, NULL, NULL),
+(2, 'braulio', 'baulio@gmail.com', '12312321dsadasds', '133213213', 'jac', 8, '2025-07-08 05:00:00', NULL, NULL, NULL),
+(3, 'laura', 'laura@gmail.com', 'laura12345', '12312312', 'ciudadano', NULL, '2012-03-08 05:00:00', NULL, NULL, NULL),
+(4, 'amogus', 'amogus@gmail.com', 'amogus', '2131312', 'ciudadano', NULL, '0000-00-00 00:00:00', NULL, NULL, NULL);
 
 --
 -- Índices para tablas volcadas
@@ -310,6 +340,13 @@ ALTER TABLE `seguimiento`
   ADD KEY `id_reporte` (`id_reporte`);
 
 --
+-- Indices de la tabla `subscriptions`
+--
+ALTER TABLE `subscriptions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
@@ -388,10 +425,16 @@ ALTER TABLE `seguimiento`
   MODIFY `id_seguimiento` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `subscriptions`
+--
+ALTER TABLE `subscriptions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Restricciones para tablas volcadas
@@ -440,6 +483,12 @@ ALTER TABLE `reportes`
 --
 ALTER TABLE `rol_usuario`
   ADD CONSTRAINT `rol_usuario_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`);
+
+--
+-- Filtros para la tabla `subscriptions`
+--
+ALTER TABLE `subscriptions`
+  ADD CONSTRAINT `subscriptions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `usuarios`
